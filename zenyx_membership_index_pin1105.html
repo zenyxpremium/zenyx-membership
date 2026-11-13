@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenyx Premium | Membership</title>
+<style>
+:root{--bg:#090a0c;--panel:#15171b;--silver:#d8dce2;--muted:#9ba1aa;--line:#343840;--white:#f7f8fa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#252a32 0,#090a0c 48%);color:var(--white);font-family:Arial,sans-serif;min-height:100vh}
+header{padding:24px 16px;text-align:center;border-bottom:1px solid var(--line)}
+.logo{width:62px;height:62px;border:1px solid #aeb5bf;border-radius:18px;display:grid;place-items:center;margin:0 auto 12px;font-size:24px;font-weight:800;letter-spacing:-3px;color:#fff;background:linear-gradient(145deg,#343a43,#08090b);box-shadow:0 8px 30px #000}
+h1{font-size:22px;letter-spacing:3px;margin:6px 0}.tag{color:var(--muted);font-size:11px;letter-spacing:3px}
+main{max-width:760px;margin:24px auto;padding:0 14px 40px}.tabs{display:flex;gap:8px;margin-bottom:16px}.tabs button{flex:1}
+button{border:1px solid #747b85;background:linear-gradient(135deg,#e7e9ed,#9ba2ac);color:#111;padding:12px 15px;border-radius:10px;font-weight:700;cursor:pointer}
+button.secondary{background:#202329;color:#e8ebef;border-color:var(--line)}
+.card{background:linear-gradient(145deg,#1b1e23,#101215);border:1px solid var(--line);border-radius:17px;padding:20px;margin:14px 0;box-shadow:0 12px 35px #0005}
+h2{font-size:17px;margin:0 0 15px;letter-spacing:1px}.muted{color:var(--muted);font-size:13px;line-height:1.6}
+label{display:block;color:#c9ced5;font-size:12px;margin:12px 0 6px}
+input,select{width:100%;padding:13px;border:1px solid #424751;border-radius:9px;background:#0c0e11;color:#fff;font-size:15px;outline:none}
+input:focus{border-color:#c4cad2}.full{width:100%;margin-top:14px}.result{padding:13px;border-radius:10px;margin-top:12px;background:#0b0d10;border:1px solid var(--line);font-size:13px;line-height:1.7;display:none}
+.price{font-size:34px;font-weight:800;color:#f2f4f7;margin:8px 0}.pill{display:inline-block;padding:5px 9px;border-radius:20px;border:1px solid #717985;color:#dce1e8;font-size:10px;letter-spacing:1px}
+.hidden{display:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.small{font-size:11px;color:var(--muted);line-height:1.6;margin-top:16px}
+footer{text-align:center;color:#777e88;font-size:11px;padding:22px;border-top:1px solid var(--line)}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.card{padding:16px}.tabs button{font-size:12px;padding:11px 6px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ZP</div>
+  <h1>ZENYX PREMIUM</h1>
+  <div class="tag">MEMBERSHIP PORTAL</div>
+</header>
+<main>
+  <div class="tabs">
+    <button onclick="showTab('verify')">Verify Member</button>
+    <button class="secondary" onclick="showTab('renew')">Renew Membership</button>
+    <button class="secondary" onclick="showTab('admin')">Admin</button>
+  </div>
+
+  <section id="verify" class="card">
+    <h2>MEMBERSHIP VERIFICATION</h2>
+    <p class="muted">Enter your 8-digit Membership ID to check membership status.</p>
+    <label>Membership ID</label>
+    <input id="verifyId" inputmode="numeric" maxlength="8" placeholder="Example: 26000001">
+    <button class="full" onclick="verifyMember()">CHECK MEMBERSHIP</button>
+    <div id="verifyResult" class="result"></div>
+  </section>
+
+  <section id="renew" class="card hidden">
+    <h2>MEMBERSHIP RENEWAL</h2>
+    <div class="pill">MEMBERSHIP RENEWAL FEE</div>
+    <div class="price">৳199</div>
+    <p class="muted">Send ৳199 using the payment details supplied by the Zenyx Premium team. Then submit your transaction details below. Your renewal is not complete until Admin verifies the payment.</p>
+    <div class="grid">
+      <div><label>Payment method</label><select id="method"><option>bKash Personal</option><option>Nagad Personal</option></select></div>
+      <div><label>Payment number</label><input value="01306995177" readonly></div>
+    </div>
+    <button class="secondary full" onclick="copyNumber()">COPY PAYMENT NUMBER</button>
+    <label>Membership ID (8 digits)</label><input id="payMemberId" inputmode="numeric" maxlength="8" placeholder="Your Membership ID">
+    <label>Transaction ID</label><input id="trxId" placeholder="Enter transaction ID">
+    <label>Amount (৳)</label><input id="amount" type="number" value="199">
+    <button class="full" onclick="submitPayment()">SUBMIT PAYMENT FOR REVIEW</button>
+    <div id="paymentResult" class="result"></div>
+  </section>
+
+  <section id="admin" class="card hidden">
+    <h2>ADMIN PANEL</h2>
+    <p class="muted">Demo panel only. Change the demo PIN in the source before using this page. This is not secure authentication.</p>
+    <label>Admin PIN</label><input id="adminPin" type="password" placeholder="Demo PIN">
+    <button class="full" onclick="loginAdmin()">LOGIN</button>
+    <div id="adminArea" class="hidden">
+      <hr style="border-color:#343840;margin:20px 0">
+      <h2>ADD / UPDATE MEMBER</h2>
+      <label>Membership ID (8 digits)</label><input id="newId" inputmode="numeric" maxlength="8" placeholder="Example: 26000001">
+      <label>Member name</label><input id="newName" placeholder="Customer name">
+      <label>Expiry date</label><input id="newExpiry" type="date">
+      <button class="full" onclick="saveMember()">SAVE MEMBER</button>
+      <h2 style="margin-top:24px">PAYMENT REQUESTS</h2>
+      <div id="requests" class="result" style="display:block">No requests yet.</div>
+      <p class="small">After checking the actual payment in your wallet, update the member expiry date above. This demo does not automatically approve payments.</p>
+    </div>
+  </section>
+</main>
+<footer>© 2026 ZENYX PREMIUM · MEMBERSHIP SERVICES</footer>
+<script>
+const DEMO_PIN = "1105"; // Demo only. Not secure for a public website.
+const getMembers=()=>JSON.parse(localStorage.getItem("zp_members")||"{}");
+const setMembers=x=>localStorage.setItem("zp_members",JSON.stringify(x));
+const getRequests=()=>JSON.parse(localStorage.getItem("zp_requests")||"[]");
+const setRequests=x=>localStorage.setItem("zp_requests",JSON.stringify(x));
+function showTab(id){
+  ["verify","renew","admin"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));
+  document.querySelectorAll(".tabs button").forEach((b,i)=>b.classList.toggle("secondary",["verify","renew","admin"][i]!==id));
+}
+function verifyMember(){
+  const id=document.getElementById("verifyId").value.trim(),out=document.getElementById("verifyResult");
+  out.style.display="block";
+  if(!/^\d{8}$/.test(id)){out.textContent="Please enter a valid 8-digit Membership ID.";return}
+  const m=getMembers()[id];
+  if(!m){out.textContent="Membership ID not found. Please contact Zenyx Premium.";return}
+  const active=m.expiry && new Date(m.expiry+"T23:59:59")>=new Date();
+  out.innerHTML="<b>"+(active?"ACTIVE MEMBERSHIP":"EXPIRED MEMBERSHIP")+"</b><br>Name: "+escapeText(m.name)+"<br>Member ID: "+id+"<br>Expiry: "+m.expiry;
+}
+function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function copyNumber(){navigator.clipboard?.writeText("01306995177").then(()=>alert("Payment number copied")).catch(()=>alert("Payment number: 01306995177"))}
+function submitPayment(){
+  const id=document.getElementById("payMemberId").value.trim(),trx=document.getElementById("trxId").value.trim(),amount=Number(document.getElementById("amount").value),out=document.getElementById("paymentResult");
+  out.style.display="block";
+  if(!/^\d{8}$/.test(id)){out.textContent="Enter a valid 8-digit Member ID.";return}
+  if(!getMembers()[id]){out.textContent="Member ID not found. Contact Admin first.";return}
+  if(!trx||amount!==199){out.textContent="Enter Transaction ID and exact amount ৳199.";return}
+  const list=getRequests();
+  if(list.some(x=>x.trx.toLowerCase()===trx.toLowerCase())){out.textContent="This Transaction ID has already been submitted.";return}
+  list.unshift({id,trx,amount,method:document.getElementById("method").value,date:new Date().toLocaleString(),status:"Pending"});
+  setRequests(list);out.textContent="Request submitted on this device. Admin must verify payment manually.";
+}
+function loginAdmin(){
+  if(document.getElementById("adminPin").value!==DEMO_PIN){alert("Incorrect demo PIN");return}
+  document.getElementById("adminArea").classList.remove("hidden");renderRequests();
+}
+function saveMember(){
+  const id=document.getElementById("newId").value.trim(),name=document.getElementById("newName").value.trim(),expiry=document.getElementById("newExpiry").value;
+  if(!/^\d{8}$/.test(id)||!name||!expiry){alert("Enter valid ID, name and expiry date.");return}
+  const members=getMembers();members[id]={name,expiry};setMembers(members);alert("Member saved on this device.");
+}
+function renderRequests(){
+  const r=getRequests(),box=document.getElementById("requests");
+  box.innerHTML=r.length?r.map(x=>"<div style='padding:10px 0;border-bottom:1px solid #343840'><b>"+escapeText(x.id)+"</b> · "+escapeText(x.method)+"<br>৳"+x.amount+" · TXN: "+escapeText(x.trx)+"<br><span class='muted'>"+escapeText(x.date)+" · "+x.status+"</span></div>").join(""):"No requests yet.";
+}
+</script>
+</body>
+</html>
